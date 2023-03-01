@@ -64,8 +64,29 @@ authorsRouter.get("/:authorsId", (req, res) => {
   }
 });
 
-authorsRouter.put("/:authorsId", (req, res) => {});
+authorsRouter.put("/:authorsId", (req, res) => {
+  try {
+    const authorId = req.params.authorsId;
+    const allAuthors = getAuthors();
+    const index = allAuthors.findIndex((author) => author.id === authorId);
+    const oldAuthor = allAuthors[index];
+    const updatedUser = { ...oldAuthor, ...req.body, updatedAt: new Date() };
+    allAuthors[index] = updatedUser;
+    writeAuthors(allAuthors);
+    res.send(updatedUser);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
-authorsRouter.delete("/:authorsId", (req, res) => {});
+authorsRouter.delete("/:authorsId", (req, res) => {
+  const authorId = req.params.authorsId;
+  const allAuthors = getAuthors();
+  const remainingAuthors = allAuthors.filter(
+    (author) => author.id !== authorId
+  );
+  writeAuthors(remainingAuthors);
+  res.status(204).send();
+});
 
 export default authorsRouter;
