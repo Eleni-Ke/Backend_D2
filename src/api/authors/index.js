@@ -44,7 +44,14 @@ authorsRouter.post("/", (req, res) => {
   //   res.send();
 });
 
-authorsRouter.get("/", (req, res) => {});
+authorsRouter.get("/", (req, res) => {
+  try {
+    const allAuthors = getAuthors();
+    res.send(allAuthors);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 authorsRouter.get("/:authorsId", (req, res) => {});
 
