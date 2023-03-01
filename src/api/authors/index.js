@@ -53,7 +53,16 @@ authorsRouter.get("/", (req, res) => {
   }
 });
 
-authorsRouter.get("/:authorsId", (req, res) => {});
+authorsRouter.get("/:authorsId", (req, res) => {
+  try {
+    const authorId = req.params.authorsId;
+    const allAuthors = getAuthors();
+    const author = allAuthors.find((author) => author.id === authorId);
+    res.send(author);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 authorsRouter.put("/:authorsId", (req, res) => {});
 
