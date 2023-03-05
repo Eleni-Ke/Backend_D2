@@ -29,29 +29,27 @@ authorsRouter.post(
     } catch (error) {
       next(error);
     }
-
-    //   res.send();
   }
 );
 
-authorsRouter.get("/", async (req, res) => {
+authorsRouter.get("/", async (req, res, next) => {
   try {
     const allAuthors = await getAuthors();
     console.log(allAuthors);
     res.send(allAuthors);
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 });
 
-authorsRouter.get("/:authorsId", async (req, res) => {
+authorsRouter.get("/:authorsId", async (req, res, next) => {
   try {
     const authorId = req.params.authorsId;
     const allAuthors = await getAuthors();
     const author = allAuthors.find((author) => author.id === authorId);
     res.send(author);
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 });
 
@@ -59,7 +57,7 @@ authorsRouter.put(
   "/:authorsId",
   checkAuthorSchema,
   triggerBadRequest,
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const authorId = req.params.authorsId;
       const allAuthors = await getAuthors();
@@ -70,19 +68,23 @@ authorsRouter.put(
       await writeAuthors(allAuthors);
       res.send(updatedUser);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 );
 
-authorsRouter.delete("/:authorsId", async (req, res) => {
-  const authorId = req.params.authorsId;
-  const allAuthors = await getAuthors();
-  const remainingAuthors = allAuthors.filter(
-    (author) => author.id !== authorId
-  );
-  await writeAuthors(remainingAuthors);
-  res.status(204).send();
+authorsRouter.delete("/:authorsId", async (req, res, next) => {
+  try {
+    const authorId = req.params.authorsId;
+    const allAuthors = await getAuthors();
+    const remainingAuthors = allAuthors.filter(
+      (author) => author.id !== authorId
+    );
+    await writeAuthors(remainingAuthors);
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default authorsRouter;

@@ -1,13 +1,11 @@
 import Express from "express";
 import uniqid from "uniqid";
-import createHttpError from "http-errors";
 import { checkBlogpostsSchema, triggerBadRequest } from "./blogpostSchema.js";
 import {
   getBlogposts,
   writeBlogposts,
   getAuthors,
 } from "../../lib/fs-tools.js";
-import { check } from "express-validator";
 
 const blogpostsRouter = Express.Router();
 
@@ -46,6 +44,53 @@ blogpostsRouter.get("/", async (req, res, next) => {
     } else {
       res.send(allBlogposts);
     }
+  } catch (error) {
+    next(error);
+  }
+});
+
+blogpostsRouter.get("/:postsId", async (req, res, next) => {
+  try {
+    const postId = req.params.postsId;
+    const allBlogposts = await getBlogposts();
+    const post = allBlogposts.find((e) => e.id === postId);
+    res.send(post);
+  } catch (error) {
+    next(error);
+  }
+});
+
+blogpostsRouter.put(
+  "/:postsId",
+  checkBlogpostsSchema,
+  triggerBadRequest,
+  async (req, res, next) => {
+    try {
+      const postId = req.params.postsId;
+      const allBlogposts = await getBlogposts();
+      const index = allBlogposts.findIndes((e) => e.id === postId);
+      const oldPost = allBlogposts[index];
+      const updatedPost = {
+        ...oldPost,
+        ...req.body,
+        updatedAt: new Date(),
+      };
+      allBlogposts[index] = updatedPost;
+      await writeBlogposts(allBlogposts);
+      res.send(updatedPost);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+blogpostsRouter.delete("/:postsId", async (req, res, next) => {
+  try {
+    const postId = req.params.postsId;
+    const allBlogposts = await getBlogposts;
+    const remainingPosts = allBlogposts.filter((e) => e.id !== postId);
+    await writeBlogposts(remainingPosts);
+    res.status(204).send();
   } catch (error) {
     next(error);
   }
