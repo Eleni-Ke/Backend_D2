@@ -68,7 +68,7 @@ authorsRouter.put("/:authorsId", async (req, res) => {
     const oldAuthor = allAuthors[index];
     const updatedUser = { ...oldAuthor, ...req.body, updatedAt: new Date() };
     allAuthors[index] = updatedUser;
-    writeAuthors(allAuthors);
+    await writeAuthors(allAuthors);
     res.send(updatedUser);
   } catch (error) {
     console.log(error);
@@ -81,7 +81,7 @@ authorsRouter.delete("/:authorsId", async (req, res) => {
   const remainingAuthors = allAuthors.filter(
     (author) => author.id !== authorId
   );
-  writeAuthors(remainingAuthors);
+  await writeAuthors(remainingAuthors);
   res.status(204).send();
 });
 
