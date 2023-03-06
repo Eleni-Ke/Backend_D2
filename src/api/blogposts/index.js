@@ -1,11 +1,7 @@
 import Express from "express";
 import uniqid from "uniqid";
 import { checkBlogpostsSchema, triggerBadRequest } from "./blogpostSchema.js";
-import {
-  getBlogposts,
-  writeBlogposts,
-  getAuthors,
-} from "../../lib/fs-tools.js";
+import { getBlogposts, writeBlogposts } from "../../lib/fs-tools.js";
 
 const blogpostsRouter = Express.Router();
 
@@ -68,7 +64,7 @@ blogpostsRouter.put(
     try {
       const postId = req.params.postsId;
       const allBlogposts = await getBlogposts();
-      const index = allBlogposts.findIndes((e) => e.id === postId);
+      const index = allBlogposts.findIndex((e) => e.id === postId);
       const oldPost = allBlogposts[index];
       const updatedPost = {
         ...oldPost,

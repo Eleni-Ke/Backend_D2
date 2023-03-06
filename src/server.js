@@ -8,16 +8,23 @@ import {
   generalErrorHandler,
   notFoundHandler,
 } from "./errorsHandlers.js";
+import avatarRouter from "./api/files/avatar.js";
+import coverRouter from "./api/files/cover.js";
+import commentsRouter from "./api/comments/index.js";
 
 const server = Express();
 const port = 3001;
 
 server.use(cors());
+server.use(Express.static("public"));
 
 server.use(Express.json());
 
 server.use("/authors", authorsRouter);
 server.use("/blogposts", blogpostsRouter);
+server.use("/authors", avatarRouter);
+server.use("/blogposts", coverRouter);
+server.use("/blogposts", commentsRouter);
 
 server.use(badReqHandler);
 server.use(notFoundHandler);

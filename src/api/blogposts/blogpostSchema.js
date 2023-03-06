@@ -78,13 +78,29 @@ const authorsSchema = {
   DOB: {
     in: ["body"],
     isString: {
-      errorMessage: "Date of birth value is required and must be a date",
+      errorMessage: "Date of birth value is required and must be a string",
+    },
+  },
+};
+
+const commentsSchema = {
+  name: {
+    in: ["body"],
+    isString: {
+      errorMessage: "Name is required and must be a string",
+    },
+  },
+  comment: {
+    in: ["body"],
+    isString: {
+      errorMessage: "Comment is required and must be a string",
     },
   },
 };
 
 export const checkBlogpostsSchema = checkSchema(blogpostsSchema);
 export const checkAuthorSchema = checkSchema(authorsSchema);
+export const checkCommentSchema = checkSchema(commentsSchema);
 
 export const triggerBadRequest = (req, res, next) => {
   const errors = validationResult(req);

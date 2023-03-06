@@ -35,7 +35,6 @@ authorsRouter.post(
 authorsRouter.get("/", async (req, res, next) => {
   try {
     const allAuthors = await getAuthors();
-    console.log(allAuthors);
     res.send(allAuthors);
   } catch (error) {
     next(error);
