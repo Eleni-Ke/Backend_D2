@@ -1,28 +1,38 @@
 import Express from "express";
 import createHttpError from "http-errors";
 import multer from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { extname } from "path";
 import { getBlogposts, saveCover, writeBlogposts } from "../../lib/fs-tools.js";
+import { v2 as cloudinary } from "cloudinary";
 
 const coverRouter = Express.Router();
+const cloudinaryUploader = multer({
+  storage: new CloudinaryStorage({
+    cloudinary,
+    params: { folder: "blogposts/covers" },
+  }),
+}).single("cover");
 
 coverRouter.post(
   "/:blogpostsId/uploadCover",
-  multer().single("cover"),
+  // multer().single("cover"),
+  cloudinaryUploader,
   async (req, res, next) => {
     try {
       const allBlogposts = await getBlogposts();
       const blogpostId = req.params.blogpostsId;
       const index = allBlogposts.findIndex((e) => e.id === blogpostId);
       if (index !== -1) {
-        const originalFileExt = extname(req.file.originalname);
-        const fileName = blogpostId + originalFileExt;
-        await saveCover(fileName, req.file.buffer);
+        // const originalFileExt = extname(req.file.originalname);
+        // const fileName = blogpostId + originalFileExt;
+        // await saveCover(fileName, req.file.buffer);
+
         const olfPost = allBlogposts[index];
         const updatedAuthor = {
           ...olfPost,
           ...req.body,
-          cover: `http://localhost:3001/img/cover/${fileName}`,
+          cover: req.file.path,
           updatedAt: new Date(),
         };
         allBlogposts[index] = updatedAuthor;
