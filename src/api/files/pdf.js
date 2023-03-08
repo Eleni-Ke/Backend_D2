@@ -13,7 +13,7 @@ pdfRouter.get("/:postsId/pdf", async (req, res, next) => {
     if (matchedPost) {
       res.setHeader(
         "Content-Disposition",
-        `attachment; filename=${matchedPost}.pdf`
+        `attachment; filename=${matchedPost.title}.pdf`
       );
       const source = await getPDFReadableStream(matchedPost);
       const destination = res;
