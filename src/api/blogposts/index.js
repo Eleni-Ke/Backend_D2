@@ -1,7 +1,12 @@
 import Express from "express";
 import uniqid from "uniqid";
 import { checkBlogpostsSchema, triggerBadRequest } from "./blogpostSchema.js";
-import { getBlogposts, writeBlogposts } from "../../lib/fs-tools.js";
+import {
+  getAuthors,
+  getBlogposts,
+  writeBlogposts,
+} from "../../lib/fs-tools.js";
+import { sendsPostEmail } from "../../lib/email-tools.js";
 
 const blogpostsRouter = Express.Router();
 
@@ -21,6 +26,17 @@ blogpostsRouter.post(
       const allBlogposts = await getBlogposts();
       allBlogposts.push(newBlogpost);
       await writeBlogposts(allBlogposts);
+      const authorName = req.body.author.name;
+      const allAuthors = await getAuthors();
+      const matchedAuthor = allAuthors.find((e) => e.name === authorName);
+      if (matchedAuthor) {
+        console.log(matchedAuthor);
+        const email = matchedAuthor.email;
+        console.log(email);
+        await sendsPostEmail(email);
+      } else {
+        console.log("Author does not exist.");
+      }
 
       res.status(201).send({ id: newBlogpost.id });
     } catch (error) {

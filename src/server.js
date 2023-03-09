@@ -13,6 +13,7 @@ import coverRouter from "./api/files/cover.js";
 import commentsRouter from "./api/comments/index.js";
 import createHttpError from "http-errors";
 import pdfRouter from "./api/files/pdf.js";
+import csvRouter from "./api/files/csv.js";
 
 const server = Express();
 const port = process.env.PORT;
@@ -39,12 +40,17 @@ server.use(Express.static("public"));
 
 server.use(Express.json());
 
+// ************************** ENDPOINTS ***********************
+
+server.use("/", csvRouter);
 server.use("/authors", authorsRouter);
 server.use("/blogposts", blogpostsRouter);
 server.use("/authors", avatarRouter);
 server.use("/blogposts", coverRouter);
 server.use("/blogposts", commentsRouter);
 server.use("/blogposts", pdfRouter);
+
+// ************************* ERROR HANDLERS *******************
 
 server.use(badReqHandler);
 server.use(notFoundHandler);
