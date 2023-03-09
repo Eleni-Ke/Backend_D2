@@ -26,17 +26,20 @@ blogpostsRouter.post(
       const allBlogposts = await getBlogposts();
       allBlogposts.push(newBlogpost);
       await writeBlogposts(allBlogposts);
-      const authorName = req.body.author.name;
-      const allAuthors = await getAuthors();
-      const matchedAuthor = allAuthors.find((e) => e.name === authorName);
-      if (matchedAuthor) {
-        console.log(matchedAuthor);
-        const email = matchedAuthor.email;
-        console.log(email);
-        await sendsPostEmail(email);
-      } else {
-        console.log("Author does not exist.");
-      }
+      const email = req.body.author.email;
+      console.log(email);
+      // const authorName = req.body.author.name;
+      // const allAuthors = await getAuthors();
+      // const matchedAuthor = allAuthors.find((e) => e.name === authorName);
+      // if (matchedAuthor) {
+      //   console.log(matchedAuthor);
+      //   const email = matchedAuthor.email;
+      //   console.log(email);
+      //   await sendsPostEmail(email);
+      // } else {
+      //   console.log("Author does not exist.");
+      // }
+      await sendsPostEmail(email);
 
       res.status(201).send({ id: newBlogpost.id });
     } catch (error) {

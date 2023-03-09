@@ -1,5 +1,5 @@
 import sgMail from "@sendgrid/mail";
-sgMail.setApiKey(process.openStdin.SENDGRID_KEY);
+sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 export const sendsPostEmail = async (recipientAdress) => {
   const msg = {
